@@ -85,3 +85,9 @@ Initial logged actions include:
 
 ```text
 Admin Maria approved Request REQ-2026-001.
+
+Staff Juan added 20 pairs of gloves as an additional item.
+
+Admin Maria mobilized 3 wrenches and 10 pairs of gloves.
+
+Staff Juan recorded 1 damaged ball hammer.
