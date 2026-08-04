@@ -66,4 +66,9 @@ class InventoryRequest extends Model
     {
         return $this->hasMany(InventoryRequest::class, 'mobilized_by');
     }
+    
+    public function items(): HasMany
+    {
+    return $this->hasMany(RequestItem::class);
+    }
 }

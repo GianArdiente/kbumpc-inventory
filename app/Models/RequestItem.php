@@ -1,0 +1,37 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+
+class RequestItem extends Model
+{
+    use HasFactory;
+
+    protected $fillable = [
+        'inventory_request_id',
+        'item_id',
+        'request_type',
+        'requested_quantity',
+        'released_quantity',
+        'remarks',
+    ];
+
+    public function inventoryRequest(): BelongsTo
+    {
+        return $this->belongsTo(InventoryRequest::class);
+    }
+
+    public function item(): BelongsTo
+    {
+        return $this->belongsTo(Item::class);
+    }
+
+    public function items(): HasMany
+    {
+        return $this->hasMany(RequestItem::class);
+    }
+}
