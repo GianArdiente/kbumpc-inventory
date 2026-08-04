@@ -7,6 +7,7 @@ use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class User extends Authenticatable
 {
@@ -46,4 +47,20 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function encodedInventoryRequests(): HasMany
+    {
+        return $this->hasMany(InventoryRequest::class, 'encoded_by');
+    }
+
+    public function approvedInventoryRequests(): HasMany
+    {
+        return $this->hasMany(InventoryRequest::class, 'approved_by');
+    }
+
+    public function mobilizedInventoryRequests(): HasMany
+    {
+        return $this->hasMany(InventoryRequest::class, 'mobilized_by');
+    }
 }
+
