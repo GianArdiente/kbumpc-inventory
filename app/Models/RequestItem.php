@@ -30,8 +30,8 @@ class RequestItem extends Model
         return $this->belongsTo(Item::class);
     }
 
-    public function items(): HasMany
+    public function returnRecords(): HasMany
     {
-        return $this->hasMany(RequestItem::class);
+        return $this->hasMany(ReturnRecord::class);
     }
 }
