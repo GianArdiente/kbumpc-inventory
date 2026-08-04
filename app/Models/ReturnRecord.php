@@ -43,4 +43,6 @@ class ReturnRecord extends Model
     {
         return $this->morphMany(ActivityLog::class, 'subject');
     }
+
+    
 }
