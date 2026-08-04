@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 class InventoryRequest extends Model
 {
@@ -66,9 +67,14 @@ class InventoryRequest extends Model
     {
         return $this->hasMany(InventoryRequest::class, 'mobilized_by');
     }
-    
+
     public function items(): HasMany
     {
-    return $this->hasMany(RequestItem::class);
+        return $this->hasMany(RequestItem::class);
+    }
+
+    public function activityLogs(): MorphMany
+    {
+        return $this->morphMany(ActivityLog::class, 'subject');
     }
 }

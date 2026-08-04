@@ -49,4 +49,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(ReturnRecord::class, 'recorded_by');
     }
+
+    public function activityLogs(): HasMany
+    {
+        return $this->hasMany(ActivityLog::class);
+    }
 }
