@@ -4,6 +4,7 @@ namespace App\Actions\InventoryRequests;
 
 use App\Models\ActivityLog;
 use App\Models\InventoryRequest;
+use App\Models\InventoryTransaction;
 use App\Models\RequestItem;
 use App\Models\ReturnRecord;
 use App\Models\User;
@@ -34,6 +35,7 @@ class RecordItemReturn
                 ->findOrFail($requestItem->id);
 
             $item = $lockedRequestItem->item;
+
             $inventoryRequest = InventoryRequest::query()
                 ->lockForUpdate()
                 ->findOrFail($lockedRequestItem->inventory_request_id);
@@ -122,6 +124,22 @@ class RecordItemReturn
                     'available_quantity',
                     $goodQuantity
                 );
+
+                $item->refresh();
+
+                InventoryTransaction::create([
+                    'item_id' => $item->id,
+                    'user_id' => $recordedBy->id,
+                    'source_type' => ReturnRecord::class,
+                    'source_id' => $returnRecord->id,
+                    'type' => 'good_return',
+                    'overall_stock_change' => 0,
+                    'available_quantity_change' => $goodQuantity,
+                    'overall_stock_after' => $item->overall_stock,
+                    'available_quantity_after' => $item->available_quantity,
+                    'remarks' =>
+                        "Good return for request {$inventoryRequest->request_number}.",
+                ]);
             }
 
             ActivityLog::create([
@@ -156,6 +174,7 @@ class RecordItemReturn
                 'requestItem.item',
                 'recorder',
                 'activityLogs',
+                'inventoryTransactions',
             ]);
         });
     }

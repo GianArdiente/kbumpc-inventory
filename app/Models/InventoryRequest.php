@@ -77,4 +77,12 @@ class InventoryRequest extends Model
     {
         return $this->morphMany(ActivityLog::class, 'subject');
     }
+
+    public function inventoryTransactions(): MorphMany
+    {
+        return $this->morphMany(
+            InventoryTransaction::class,
+            'source'
+        );
+    }
 }

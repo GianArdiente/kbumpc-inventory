@@ -8,6 +8,7 @@ use App\Models\Item;
 use App\Models\User;
 use DomainException;
 use Illuminate\Support\Facades\DB;
+use App\Models\InventoryTransaction;
 
 class MobilizeInventoryRequest
 {
@@ -92,6 +93,21 @@ class MobilizeInventoryRequest
 
                 $requestItem->update([
                     'released_quantity' => $quantity,
+                ]);
+
+                InventoryTransaction::create([
+                'item_id' => $item->id,
+                'user_id' => $mobilizedBy->id,
+                'source_type' => InventoryRequest::class,
+                'source_id' => $lockedRequest->id,
+                'type' => 'release',
+                'overall_stock_change' => $item->consumption_type === 'consumable'
+                    ? -$quantity
+                    : 0,
+                'available_quantity_change' => -$quantity,
+                'overall_stock_after' => $item->overall_stock,
+                'available_quantity_after' => $item->available_quantity,
+                'remarks' => "Released for request {$lockedRequest->request_number}.",
                 ]);
 
                 $releasedItems[] = [

@@ -51,4 +51,9 @@ class Item extends Model
     {
         return $this->morphMany(ActivityLog::class, 'subject');
     }
+
+    public function inventoryTransactions(): HasMany
+    {
+        return $this->hasMany(InventoryTransaction::class);
+    }
 }
