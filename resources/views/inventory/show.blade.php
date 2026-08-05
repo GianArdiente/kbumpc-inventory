@@ -24,22 +24,46 @@
 
             @if (auth()->user()->role === 'admin')
                 <div class="flex gap-3">
-                    <button
-                        type="button"
-                        class="rounded-xl border border-slate-300 px-5 py-2.5 text-sm font-semibold text-slate-700 transition hover:bg-white"
-                    >
-                        Edit Item
-                    </button>
 
-                    <a
-                        href="{{ route('inventory.adjust', $item) }}"
-                        class="rounded-xl bg-slate-950 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-800"
+                <a
+                    href="{{ route('inventory.edit', $item) }}"
+                    class="rounded-xl border border-slate-300 px-5 py-2.5 text-sm font-semibold text-slate-700 transition hover:bg-white"
+                >
+                    Edit Item
+                </a>
+
+                <a
+                    href="{{ route('inventory.adjust', $item) }}"
+                    class="rounded-xl bg-slate-950 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-800"
+                >
+                Adjust Stock
+                </a>
+
+                <form
+                    method="POST"
+                    action="{{ route('inventory.archive', $item) }}"
+                    onsubmit="return confirm('Archive {{ $item->name }}? This item will be hidden from the active inventory list.');"
+                >
+                    @csrf
+                    @method('PATCH')
+
+                    <button
+                        type="submit"
+                        class="rounded-xl border border-rose-300 px-5 py-2.5 text-sm font-semibold text-rose-700 transition hover:bg-rose-50"
                     >
-                        Adjust Stock
-                    </a>
-                </div>
+                        Archive Item
+                    </button>
+                </form>
+
+            </div>
             @endif
         </div>
+
+        @if ($errors->has('archive'))
+            <div class="mb-6 rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-800">
+            {{ $errors->first('archive') }}
+            </div>
+        @endif
 
         <section class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
             <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">

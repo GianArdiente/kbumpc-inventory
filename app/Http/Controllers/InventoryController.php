@@ -3,7 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreItemRequest;
+use App\Http\Requests\UpdateItemRequest;
 use App\Actions\Inventory\AdjustItemStock;
+use App\Actions\Inventory\ArchiveItem;
+use App\Actions\Inventory\RestoreItem;
 use App\Http\Requests\AdjustItemStockRequest;
 use DomainException;
 use App\Models\ActivityLog;
@@ -139,6 +142,25 @@ class InventoryController extends Controller
         ]);
     }
 
+    public function edit(Item $item): View
+    {
+        abort_unless(
+            auth()->user()?->role === 'admin'
+                && auth()->user()?->status === 'active',
+            403
+        );
+
+        abort_if(
+            $item->archived_at !== null,
+            403,
+            'Archived items cannot be edited.'
+        );
+
+        return view('inventory.edit', [
+            'item' => $item,
+        ]);
+    }
+
     public function adjust(Item $item): View
     {
         abort_unless(
@@ -271,7 +293,12 @@ class InventoryController extends Controller
             ->route('inventory.index')
             ->with(
                 'status',
-                "Inventory item {$item->name} was added successfully."
+                sprintf(
+                    '%s: %s (%s) has been added.',
+                    ucfirst($item->category),
+                    $item->item_code,
+                    $item->name
+                )
             );
     }
 
@@ -306,4 +333,128 @@ class InventoryController extends Controller
                 "Stock for {$item->name} was adjusted successfully."
             );
     }
+
+    public function update(
+        UpdateItemRequest $request,
+        Item $item
+    ): RedirectResponse {
+        $validated = $request->validated();
+
+        DB::transaction(function () use (
+            $validated,
+            $request,
+            $item
+        ): void {
+            $before = [
+                'item_code' => $item->item_code,
+                'name' => $item->name,
+                'category' => $item->category,
+                'consumption_type' => $item->consumption_type,
+                'unit' => $item->unit,
+                'minimum_stock_level' =>
+                    $item->minimum_stock_level,
+                'storage_location' => $item->storage_location,
+                'remarks' => $item->remarks,
+            ];
+
+            $item->update([
+                'item_code' => $validated['item_code'],
+                'name' => $validated['name'],
+                'category' => $validated['category'],
+                'consumption_type' =>
+                    $validated['consumption_type'],
+                'unit' => $validated['unit'],
+                'minimum_stock_level' =>
+                    $validated['minimum_stock_level'],
+                'storage_location' =>
+                    $validated['storage_location'] ?? null,
+                'remarks' => $validated['remarks'] ?? null,
+            ]);
+
+            ActivityLog::create([
+                'user_id' => $request->user()->id,
+                'action' => 'item_updated',
+                'subject_type' => Item::class,
+                'subject_id' => $item->id,
+                'description' => sprintf(
+                    '%s updated inventory item %s.',
+                    $request->user()->name,
+                    $item->name
+                ),
+                'properties' => [
+                    'before' => $before,
+                    'after' => [
+                        'item_code' => $item->item_code,
+                        'name' => $item->name,
+                        'category' => $item->category,
+                        'consumption_type' =>
+                            $item->consumption_type,
+                        'unit' => $item->unit,
+                        'minimum_stock_level' =>
+                            $item->minimum_stock_level,
+                        'storage_location' =>
+                            $item->storage_location,
+                        'remarks' => $item->remarks,
+                    ],
+                ],
+            ]);
+            });
+
+        return redirect()
+            ->route('inventory.show', $item)
+            ->with(
+                'status',
+                "Inventory item {$item->name} was updated successfully."
+            );
+    }
+    
+
+    public function archive(
+        Item $item,
+        ArchiveItem $archiveItem
+    ): RedirectResponse {
+        try {
+            $archiveItem->execute(
+                item: $item,
+                archivedBy: auth()->user(),
+            );
+        } catch (DomainException $exception) {
+            return back()->withErrors([
+                'archive' => $exception->getMessage(),
+            ]);
+        }
+
+        return redirect()
+            ->route('inventory.index')
+            ->with(
+                'status',
+                "Inventory item {$item->name} was archived successfully."
+            );
+    }
+    
+    public function restore(
+        Item $item,
+        RestoreItem $restoreItem
+    ): RedirectResponse {
+        try {
+            $restoreItem->execute(
+                item: $item,
+                restoredBy: auth()->user(),
+            );
+        } catch (DomainException $exception) {
+            return back()->withErrors([
+                'restore' => $exception->getMessage(),
+            ]);
+        }
+
+        return redirect()
+            ->route('inventory.index', [
+                'stock_status' => 'archived',
+            ])
+            ->with(
+                'status',
+                "Inventory item {$item->name} was restored successfully."
+            );
+    }
+
 }

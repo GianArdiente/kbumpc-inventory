@@ -46,6 +46,12 @@
             </div>
         </section>
 
+        @if ($errors->has('restore'))
+            <div class="rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-800">
+                {{ $errors->first('restore') }}
+            </div>
+        @endif
+
         <section class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
             <div class="border-b border-slate-200 p-5">
                 <div class="flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
@@ -361,13 +367,36 @@
                                 </td>
 
                                 <td class="whitespace-nowrap px-5 py-4 text-right">
-                                    <a
-                                        href="{{ route('inventory.show', $item) }}"
-                                        class="text-sm font-semibold text-slate-700 hover:text-slate-950"
-                                    >
-                                        View
-                                    </a>
-                                </td>
+                                    <div class="flex items-center justify-end gap-3">
+                                        <a
+                                            href="{{ route('inventory.show', $item) }}"
+                                            class="text-sm font-semibold text-slate-700 hover:text-slate-950"
+                                        >
+                                            View
+                                        </a>
+
+                                    @if (
+                                        $item->archived_at !== null &&
+                                        auth()->user()->role === 'admin'
+                                    )
+                                        <form
+                                            method="POST"
+                                            action="{{ route('inventory.restore', $item) }}"
+                                            onsubmit="return confirm('Restore {{ $item->name }} to the active inventory list?');"
+                                            >
+                                                @csrf
+                                                @method('PATCH')
+
+                                                <button
+                                                    type="submit"
+                                                    class="text-sm font-semibold text-emerald-700 hover:text-emerald-900"
+                                            >
+                                                Restore
+                                            </button>
+                                        </form>
+                                    @endif
+                                </div>
+                            </td>
                             </tr>
                         @empty
                             <tr>

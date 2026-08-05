@@ -29,6 +29,26 @@ Route::middleware('auth')->group(function () {
         'create',
     ])->name('inventory.create');
 
+    Route::get('/inventory/{item}/edit', [
+        InventoryController::class,
+        'edit',
+    ])->name('inventory.edit');
+
+    Route::put('/inventory/{item}', [
+        InventoryController::class,
+        'update',
+    ])->name('inventory.update');
+
+    Route::patch('/inventory/{item}/archive', [
+        InventoryController::class,
+        'archive',
+    ])->name('inventory.archive');
+
+    Route::patch('/inventory/{item}/restore', [
+        InventoryController::class,
+        'restore',
+    ])->name('inventory.restore');
+
     Route::get('/inventory/{item}/adjust', [
         InventoryController::class,
         'adjust',

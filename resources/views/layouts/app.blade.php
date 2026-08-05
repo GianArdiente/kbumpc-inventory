@@ -10,6 +10,8 @@
 </head>
 
 <body class="min-h-screen bg-slate-100 text-slate-900">
+    <x-toast />
+
     <div
         x-data="{ sidebarOpen: false }"
         class="min-h-screen"
@@ -157,12 +159,6 @@
             </header>
 
             <main class="px-4 py-6 sm:px-6 lg:px-8">
-                @if (session('status'))
-                    <div class="mb-6 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800">
-                        {{ session('status') }}
-                    </div>
-                @endif
-
                 @yield('content')
             </main>
         </div>
