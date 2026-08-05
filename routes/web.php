@@ -3,6 +3,7 @@
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\InventoryController;
 
 Route::redirect('/', '/dashboard');
 
@@ -17,6 +18,22 @@ Route::get('/dashboard', [
     ->name('dashboard');
 
 Route::middleware('auth')->group(function () {
+
+    Route::get('/inventory', [
+        InventoryController::class,
+        'index',
+    ])->name('inventory.index');
+
+    Route::get('/inventory/create', [
+        InventoryController::class,
+        'create',
+    ])->name('inventory.create');
+
+    Route::post('/inventory', [
+        InventoryController::class,
+        'store',
+    ])->name('inventory.store');
+
     Route::get('/profile', [
         ProfileController::class,
         'edit',
@@ -31,6 +48,7 @@ Route::middleware('auth')->group(function () {
         ProfileController::class,
         'destroy',
     ])->name('profile.destroy');
+    
 });
 
 require __DIR__.'/auth.php';
