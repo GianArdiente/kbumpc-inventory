@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreItemRequest;
+use App\Actions\Inventory\AdjustItemStock;
+use App\Http\Requests\AdjustItemStockRequest;
+use DomainException;
 use App\Models\ActivityLog;
 use App\Models\InventoryTransaction;
 use App\Models\Item;
@@ -136,6 +139,25 @@ class InventoryController extends Controller
         ]);
     }
 
+    public function adjust(Item $item): View
+    {
+        abort_unless(
+            auth()->user()?->role === 'admin'
+                && auth()->user()?->status === 'active',
+            403
+        );
+
+        abort_if(
+            $item->archived_at !== null,
+            403,
+            'Archived items cannot be adjusted.'
+        );
+
+        return view('inventory.adjust', [
+            'item' => $item,
+        ]);
+    }
+
     public function create(): View
     {
         abort_unless(
@@ -145,6 +167,40 @@ class InventoryController extends Controller
         );
 
         return view('inventory.create');
+    }
+
+    public function show(Item $item): View
+    {
+        $item->load([
+            'inventoryTransactions' => fn ($query) => $query
+                ->with('user')
+                ->latest()
+                ->limit(20),
+            'activityLogs' => fn ($query) => $query
+                ->with('user')
+                ->latest()
+                ->limit(20),
+            'requestItems.inventoryRequest',
+        ]);
+
+        $stockStatus = match (true) {
+            $item->archived_at !== null => 'archived',
+            $item->available_quantity === 0 => 'out_of_stock',
+            $item->available_quantity <= $item->minimum_stock_level
+                => 'low_stock',
+            default => 'available',
+        };
+
+        $inUseQuantity = max(
+            0,
+            $item->overall_stock - $item->available_quantity
+        );
+
+        return view('inventory.show', [
+            'item' => $item,
+            'stockStatus' => $stockStatus,
+            'inUseQuantity' => $inUseQuantity,
+        ]);
     }
 
     public function store(
@@ -216,6 +272,38 @@ class InventoryController extends Controller
             ->with(
                 'status',
                 "Inventory item {$item->name} was added successfully."
+            );
+    }
+
+    public function updateStock(
+        AdjustItemStockRequest $request,
+        Item $item,
+        AdjustItemStock $adjustItemStock
+    ): RedirectResponse {
+        $validated = $request->validated();
+
+        try {
+            $adjustItemStock->execute(
+                item: $item,
+                adjustedBy: $request->user(),
+                overallChange: $validated['overall_change'],
+                availableChange: $validated['available_change'],
+                type: $validated['type'],
+                remarks: $validated['remarks'],
+            );
+        } catch (DomainException $exception) {
+            return back()
+                ->withInput()
+                ->withErrors([
+                    'adjustment' => $exception->getMessage(),
+                ]);
+        }
+
+        return redirect()
+            ->route('inventory.show', $item)
+            ->with(
+                'status',
+                "Stock for {$item->name} was adjusted successfully."
             );
     }
 }

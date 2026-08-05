@@ -361,12 +361,12 @@
                                 </td>
 
                                 <td class="whitespace-nowrap px-5 py-4 text-right">
-                                    <button
-                                        type="button"
+                                    <a
+                                        href="{{ route('inventory.show', $item) }}"
                                         class="text-sm font-semibold text-slate-700 hover:text-slate-950"
                                     >
                                         View
-                                    </button>
+                                    </a>
                                 </td>
                             </tr>
                         @empty

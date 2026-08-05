@@ -29,6 +29,21 @@ Route::middleware('auth')->group(function () {
         'create',
     ])->name('inventory.create');
 
+    Route::get('/inventory/{item}/adjust', [
+        InventoryController::class,
+        'adjust',
+    ])->name('inventory.adjust');
+
+    Route::post('/inventory/{item}/adjust', [
+        InventoryController::class,
+        'updateStock',
+    ])->name('inventory.adjust.store');
+
+    Route::get('/inventory/{item}', [
+        InventoryController::class,
+        'show',
+    ])->name('inventory.show');
+
     Route::post('/inventory', [
         InventoryController::class,
         'store',
