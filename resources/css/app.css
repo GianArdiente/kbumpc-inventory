@@ -1,3 +1,314 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+[x-cloak] {
+    display: none !important;
+}
+
+@layer base {
+    :root {
+        /*
+        |--------------------------------------------------------------------------
+        | KBUMPC Brand Colors
+        |--------------------------------------------------------------------------
+        */
+
+        --kbumpc-green: #075f2f;
+        --kbumpc-green-dark: #044823;
+        --kbumpc-green-soft: #eaf7ef;
+
+        --kbumpc-blue: #123f8c;
+        --kbumpc-blue-dark: #0b2f6d;
+        --kbumpc-blue-soft: #edf3ff;
+
+        --kbumpc-gold: #f2bf18;
+        --kbumpc-gold-dark: #c99600;
+        --kbumpc-gold-soft: #fff8dc;
+
+        --kbumpc-red: #c9232d;
+        --kbumpc-red-soft: #fff0f1;
+
+        --kbumpc-navy: #081a32;
+        --kbumpc-navy-soft: #112542;
+
+        --kbumpc-background: #f4f7f6;
+        --kbumpc-surface: #ffffff;
+
+        --kbumpc-border: #dce4e1;
+
+        --kbumpc-text: #17211e;
+        --kbumpc-muted: #66756f;
+    }
+
+    html {
+        scroll-behavior: smooth;
+    }
+
+    body {
+        background:
+            radial-gradient(
+                circle at top right,
+                rgba(242, 191, 24, 0.06),
+                transparent 28rem
+            ),
+            var(--kbumpc-background);
+
+        color: var(--kbumpc-text);
+
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
+
+    ::selection {
+        background: rgba(7, 95, 47, 0.18);
+        color: var(--kbumpc-green-dark);
+    }
+}
+
+@layer components {
+    /*
+    |--------------------------------------------------------------------------
+    | Main Application Surfaces
+    |--------------------------------------------------------------------------
+    */
+
+    .kbumpc-card {
+        @apply rounded-2xl border bg-white shadow-sm;
+
+        border-color: var(--kbumpc-border);
+    }
+
+    .kbumpc-card-header {
+        @apply border-b px-6 py-5;
+
+        border-color: var(--kbumpc-border);
+    }
+
+@layer utilities {
+    .kbumpc-scrollbar {
+        scrollbar-width: thin;
+        scrollbar-color: #cbd5e1 transparent;
+    }
+
+    .kbumpc-scrollbar::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+    }
+
+    .kbumpc-scrollbar::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    .kbumpc-scrollbar::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
+        border-radius: 9999px;
+    }
+}
+
+@media (max-width: 639px) {
+    .kbumpc-btn-primary,
+    .kbumpc-btn-secondary,
+    .kbumpc-btn-outline {
+        min-height: 42px;
+    }
+
+    .kbumpc-card-header {
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+}
+    
+
+    /*
+    |--------------------------------------------------------------------------
+    | Buttons
+    |--------------------------------------------------------------------------
+    */
+
+    .kbumpc-btn-primary {
+        @apply inline-flex items-center justify-center rounded-xl px-5 py-2.5
+            text-sm font-semibold text-white transition duration-200;
+        background: var(--kbumpc-green);
+    }
+
+    .kbumpc-btn-primary:hover {
+        background: var(--kbumpc-green-dark);
+        transform: translateY(-1px);
+    }
+
+    .kbumpc-btn-secondary {
+        @apply inline-flex items-center justify-center rounded-xl px-5 py-2.5
+            text-sm font-semibold text-white transition duration-200;
+        background: var(--kbumpc-blue);
+    }
+
+    .kbumpc-btn-secondary:hover {
+        background: var(--kbumpc-blue-dark);
+        transform: translateY(-1px);
+    }
+
+    .kbumpc-btn-outline {
+        @apply inline-flex items-center justify-center rounded-xl border bg-white
+            px-5 py-2.5 text-sm font-semibold transition duration-200;
+
+        border-color: var(--kbumpc-border);
+        color: var(--kbumpc-text);
+    }
+
+    .kbumpc-btn-outline:hover {
+        background: #f8faf9;
+        border-color: #becbc6;
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Forms
+    |--------------------------------------------------------------------------
+    */
+
+    .kbumpc-input {
+        @apply w-full rounded-xl border bg-white px-3 py-2.5 text-sm
+            shadow-sm outline-none transition;
+
+        border-color: #cfd9d5;
+    }
+
+    .kbumpc-input:focus {
+        border-color: var(--kbumpc-green);
+        box-shadow:
+            0 0 0 3px rgba(7, 95, 47, 0.10);
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Navigation
+    |--------------------------------------------------------------------------
+    */
+
+    .kbumpc-sidebar {
+        background:
+            linear-gradient(
+                180deg,
+                var(--kbumpc-navy) 0%,
+                #061426 100%
+            );
+    }
+
+    .kbumpc-nav-link {
+        @apply relative flex items-center rounded-xl px-4 py-3
+            text-sm font-medium transition duration-200;
+        color: #cbd6e4;
+    }
+
+    .kbumpc-nav-link:hover {
+        background: rgba(255, 255, 255, 0.07);
+        color: #ffffff;
+        transform: translateX(2px);
+    }
+
+    .kbumpc-nav-link-active {
+        background:
+            linear-gradient(
+                90deg,
+                rgba(7, 95, 47, 0.95),
+                rgba(7, 95, 47, 0.74)
+            );
+
+        color: #ffffff;
+
+        box-shadow:
+            0 8px 22px rgba(0, 0, 0, 0.18);
+    }
+
+    .kbumpc-nav-link-active::before {
+        content: '';
+
+        position: absolute;
+
+        left: 0;
+
+        top: 50%;
+
+        width: 4px;
+        height: 22px;
+
+        border-radius: 9999px;
+
+        transform: translateY(-50%);
+
+        background: var(--kbumpc-gold);
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Status / Brand Helpers
+    |--------------------------------------------------------------------------
+    */
+
+    .kbumpc-text-green {
+        color: var(--kbumpc-green);
+    }
+
+    .kbumpc-text-blue {
+        color: var(--kbumpc-blue);
+    }
+
+    .kbumpc-text-gold {
+        color: var(--kbumpc-gold-dark);
+    }
+
+    .kbumpc-bg-green-soft {
+        background: var(--kbumpc-green-soft);
+    }
+
+    .kbumpc-bg-blue-soft {
+        background: var(--kbumpc-blue-soft);
+    }
+
+    .kbumpc-bg-gold-soft {
+        background: var(--kbumpc-gold-soft);
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Tables
+    |--------------------------------------------------------------------------
+    */
+
+    .kbumpc-table-head {
+        background: #f6f9f8;
+    }
+
+    .kbumpc-table-row {
+        transition:
+            background-color 150ms ease,
+            transform 150ms ease;
+    }
+
+    .kbumpc-table-row:hover {
+        background: #f8fbfa;
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Page Animations
+    |--------------------------------------------------------------------------
+    */
+
+    .kbumpc-page-enter {
+        animation: kbumpc-page-enter 220ms ease-out both;
+    }
+
+    @keyframes kbumpc-page-enter {
+        from {
+            opacity: 0;
+            transform: translateY(4px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+}

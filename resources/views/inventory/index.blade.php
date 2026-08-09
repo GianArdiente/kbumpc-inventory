@@ -321,51 +321,51 @@
                 <table class="min-w-full divide-y divide-slate-200">
                     <thead class="bg-slate-50">
                         <tr>
-                            <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">
+                            <th class="px-3 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">
                                 Item
                             </th>
 
-                            <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">
+                            <th class="hidden 2xl:table-cell px-3 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">
                                 Category
                             </th>
 
-                            <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">
+                            <th class="px-3 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">
                                 Type
                             </th>
 
-                            <th class="px-5 py-3 text-right text-xs font-semibold uppercase tracking-wide text-slate-500">
+                            <th class="px-3 py-3 text-right text-xs font-semibold uppercase tracking-wide text-slate-500">
                                 Unit Cost
                             </th>
 
-                            <th class="px-5 py-3 text-right text-xs font-semibold uppercase tracking-wide text-slate-500">
+                            <th class="px-3 py-3 text-right text-xs font-semibold uppercase tracking-wide text-slate-500">
                                 Physical
                             </th>
 
-                            <th class="px-5 py-3 text-right text-xs font-semibold uppercase tracking-wide text-slate-500">
+                            <th class="px-3 py-3 text-right text-xs font-semibold uppercase tracking-wide text-slate-500">
                                 Reserved
                             </th>
 
-                            <th class="px-5 py-3 text-right text-xs font-semibold uppercase tracking-wide text-slate-500">
+                            <th class="px-3 py-3 text-right text-xs font-semibold uppercase tracking-wide text-slate-500">
                                 Free
                             </th>
 
-                            <th class="px-5 py-3 text-right text-xs font-semibold uppercase tracking-wide text-slate-500">
+                            <th class="px-3 py-3 text-right text-xs font-semibold uppercase tracking-wide text-slate-500">
                                 Overall
                             </th>
 
-                            <th class="px-5 py-3 text-right text-xs font-semibold uppercase tracking-wide text-slate-500">
+                            <th class="hidden 2xl:table-cell px-3 py-3 text-right text-xs font-semibold uppercase tracking-wide text-slate-500">
                                 Overall Value
                             </th>
 
-                            <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">
+                            <th class="px-3 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">
                                 Status
                             </th>
 
-                            <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">
+                            <th class="px-3 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">
                                 Location
                             </th>
 
-                            <th class="px-5 py-3 text-right text-xs font-semibold uppercase tracking-wide text-slate-500">
+                            <th class="px-3 py-3 text-right text-xs font-semibold uppercase tracking-wide text-slate-500">
                                 Actions
                             </th>
                         </tr>
@@ -384,21 +384,25 @@
                             @endphp
 
                             <tr class="hover:bg-slate-50/80">
-                                <td class="px-5 py-4">
-                                    <p class="font-semibold text-slate-900">
+                                <td class="w-40 px-3 py-3">
+                                    <p class="font-semibold leading-5 text-slate-900">
                                         {{ $item->name }}
                                     </p>
 
                                     <p class="mt-1 text-xs text-slate-500">
                                         {{ $item->item_code }}
                                     </p>
+
+                                    <p class="mt-1 text-xs capitalize text-slate-400">
+                                        Unit: {{ $item->unit }}
+                                    </p>
                                 </td>
 
-                                <td class="whitespace-nowrap px-5 py-4 text-sm capitalize text-slate-600">
+                                <td class="hidden 2xl:table-cell whitespace-nowrap px-3 py-3 text-sm capitalize text-slate-600">
                                     {{ $item->category }}
                                 </td>
 
-                                <td class="whitespace-nowrap px-5 py-4 text-sm capitalize text-slate-600">
+                                <td class="hidden 2xl:table-cell whitespace-nowrap px-3 py-3 text-sm capitalize text-slate-600">
                                     {{ str_replace(
                                         '-',
                                         ' ',
@@ -429,19 +433,11 @@
                                     <span class="font-semibold text-slate-950">
                                         {{ number_format($stock['physical']) }}
                                     </span>
-
-                                    <span class="ml-1 text-xs text-slate-500">
-                                        {{ $item->unit }}
-                                    </span>
                                 </td>
 
                                 <td class="whitespace-nowrap px-5 py-4 text-right">
                                     <span class="font-semibold text-indigo-700">
                                         {{ number_format($stock['reserved']) }}
-                                    </span>
-
-                                    <span class="ml-1 text-xs text-indigo-500">
-                                        {{ $item->unit }}
                                     </span>
                                 </td>
 
@@ -454,23 +450,15 @@
                                     >
                                         {{ number_format($stock['free']) }}
                                     </span>
-
-                                    <span class="ml-1 text-xs text-slate-500">
-                                        {{ $item->unit }}
-                                    </span>
                                 </td>
 
                                 <td class="whitespace-nowrap px-5 py-4 text-right">
                                     <span class="font-semibold text-slate-700">
                                         {{ number_format($stock['overall']) }}
                                     </span>
-
-                                    <span class="ml-1 text-xs text-slate-500">
-                                        {{ $item->unit }}
-                                    </span>
                                 </td>
 
-                                <td class="whitespace-nowrap px-5 py-4 text-right">
+                                <td class="hidden 2xl:table-cell whitespace-nowrap px-3 py-3 text-right">
                                     @if ($overallValue !== null)
                                         <span class="font-semibold text-slate-950">
                                             ₱{{ number_format(

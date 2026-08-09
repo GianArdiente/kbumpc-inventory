@@ -176,11 +176,6 @@ Route::middleware([
         'update',
     ])->name('profile.update');
 
-    Route::delete('/profile', [
-        ProfileController::class,
-        'destroy',
-    ])->name('profile.destroy');
-
     /*
     |--------------------------------------------------------------------------
     | Users
