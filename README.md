@@ -1,63 +1,42 @@
 # KBUMPC Inventory Management System
 
-A web-based inventory, material request, warehouse monitoring, reporting, and accountability system developed for **KBUMPC**.
+Web-based inventory and warehouse management system developed for KBUMPC.
 
-The system is designed to provide a centralized platform for managing warehouse inventory and monitoring the complete movement of materials and tools—from stock entry and inventory requests to approval, mobilization, returns, damage or missing-item recording, cost tracking, reporting, and administrative auditing.
+The system handles inventory records, material and tool requests, stock movement, returns, item costs, reports, activity logs, and user accounts.
 
-Instead of relying on scattered manual records, the system maintains a structured history of inventory transactions and warehouse activities while providing administrators with reporting and accountability tools.
+The main goal of the project is to keep warehouse records in one system and maintain a history of what happens to each inventory item.
 
----
+## Project Description
 
-## Project Overview
+The KBUMPC Inventory Management System was developed to manage the day-to-day inventory operations of KBUMPC.
 
-The **KBUMPC Inventory Management System** was developed to help organize and monitor warehouse operations through a centralized digital system.
+The system keeps track of materials and tools stored in the warehouse. It records stock coming in, items being requested, approved requests, released items, returned tools, damaged items, missing items, and inventory adjustments.
 
-The project focuses not only on recording how many items are currently available, but also on tracking **what happened to inventory over time**.
+Instead of only storing the current quantity of an item, inventory movements are also saved as transactions. This allows the system to keep a history of stock changes and the user responsible for the action.
 
-The system can record and monitor:
+The project also includes cost tracking. The unit cost used during a transaction is saved so that older transactions keep their original cost even when the current price of an item changes.
 
-- Materials and tools currently stored in inventory
-- Physical, available, and reserved quantities
-- Stock received by the warehouse
-- Inventory adjustments and corrections
-- Material and tool requests
-- Request approval
-- Release or mobilization of requested items
-- Consumable materials used
-- Reusable tools currently in use
-- Returned tools and materials
-- Good-condition returns
-- Damaged items
-- Missing or unreturned items
-- Historical unit costs
-- Inventory transaction values
-- User activity and administrative actions
+Reports can be viewed for a selected date range and exported to an Excel workbook with separate sheets for different types of warehouse records.
 
-This creates a traceable inventory history rather than simply maintaining a current stock count.
-
----
-
-## Core Features
+## Main Features
 
 ### Dashboard
 
-Provides administrators and warehouse personnel with an overview of important inventory and operational information.
+The dashboard provides a quick view of the current warehouse and inventory status.
 
-The dashboard is designed to surface relevant warehouse information without requiring users to manually inspect individual inventory records.
-
----
+It displays important information from the inventory and request modules so users do not need to open each section individually.
 
 ### Inventory Management
 
-The inventory module maintains the central list of materials, equipment, and tools.
+The inventory module stores the main information for materials and tools.
 
-Each inventory item can contain information such as:
+Each item can contain:
 
 - Item code
 - Item name
 - Category
 - Consumption type
-- Unit of measurement
+- Unit
 - Current unit cost
 - Overall stock
 - Available quantity
@@ -67,341 +46,218 @@ Each inventory item can contain information such as:
 - Remarks
 - Archive status
 
-Items can also be archived without deleting their historical records.
+Items can be archived instead of permanently deleted so their previous transactions can still be referenced.
 
----
+### Stock Transactions
 
-### Stock Movement and Inventory Transactions
+Changes to inventory are recorded in the inventory transaction table.
 
-Inventory changes are recorded as transactions rather than simply overwriting stock values.
+Transactions can store:
 
-The system maintains transaction information including:
-
+- Item
 - Transaction type
-- Overall stock change
+- Stock quantity change
 - Available quantity change
-- Stock balance after the transaction
-- Historical unit cost
-- Transaction cost
-- User responsible
-- Source of the transaction
+- Quantity after the transaction
+- Unit cost at the time of the transaction
+- Total cost
+- User responsible for the transaction
+- Source record
 - Remarks
-- Transaction date and time
+- Date and time
 
-This provides a historical ledger of inventory movement.
+This is used by the system to maintain the history of inventory movement.
 
----
+### Cost Tracking
 
-### Historical Cost Tracking
+The system saves a copy of the item's unit cost when certain inventory transactions are created.
 
-The system preserves the unit cost associated with an inventory transaction at the time that transaction occurs.
+For example:
 
-For example, if an item previously cost:
+```text
+Current item cost: ₱125.50
+Stock In: 10 pieces
+Saved transaction cost: ₱125.50 each
 
-`₱125.50`
+Item cost later changes to: ₱140.00
+New Stock In: 5 pieces
+Saved transaction cost: ₱140.00 each
+```
 
-and its current unit cost later becomes:
+The first transaction remains at ₱125.50 even after the item's current cost changes.
 
-`₱140.00`
+This is used so reports from previous periods do not use the latest item price for older transactions.
 
-older inventory transactions can retain the original `₱125.50` value while new transactions use `₱140.00`.
+## Inventory Requests
 
-This prevents historical reports from being incorrectly recalculated using only the item's latest price.
+Users can create requests for materials and tools needed for operations.
 
----
+The request process follows this general flow:
 
-## Inventory Request Workflow
-
-The system includes a structured request workflow for materials and tools.
-
-A request can progress through operational stages such as:
-
-**Request Creation → Item Assignment → Approval → Mobilization → Return / Completion**
-
-This provides clearer accountability for inventory leaving the warehouse.
-
-### Request Creation
-
-Authorized users can create inventory requests and specify the required materials or tools.
+```text
+Request Created
+      ↓
+Items Added
+      ↓
+Request Approved
+      ↓
+Items Reserved
+      ↓
+Request Mobilized
+      ↓
+Items Used / Returned
+```
 
 ### Approval
 
-Requests can be reviewed before inventory is released.
+A request must be approved before its inventory can be released.
 
-Inventory quantities can be reserved during the request process to prevent the same available stock from being allocated incorrectly.
+The system uses reserved quantities to prevent stock assigned to an approved request from being treated as freely available inventory.
 
 ### Mobilization
 
-Once an approved request is mobilized, the system records the release of the requested inventory.
+Mobilization records the actual release of approved materials and tools.
 
-The corresponding inventory quantities and transaction records are updated automatically.
+The inventory quantities are updated and corresponding inventory transactions are created.
 
----
+## Consumable Materials and Reusable Tools
 
-## Materials and Tools
+Inventory items have a consumption type so the system can handle materials and tools differently.
 
-The system distinguishes between inventory based on how it is consumed or returned.
+### Consumable
 
-### Consumable Materials
+Consumable items are materials that are expected to be used after they are released.
 
-Consumable materials can be recorded as used once released for operations.
+Examples may include construction materials or supplies.
 
-These materials contribute to material usage and cost reporting.
+### Reusable
 
-### Reusable Tools
+Reusable items are tools or equipment that are expected to return to the warehouse after use.
 
-Reusable tools can be mobilized and later returned to the warehouse.
+These items can go through the return process.
 
-The system can therefore track equipment that is:
+## Returns
 
-- Available
-- Reserved
-- In use
-- Returned
-- Damaged
-- Missing
+The Returns module records reusable items coming back to the warehouse.
 
----
+Returned quantities can be classified based on their condition.
 
-## Returns Management
-
-Reusable inventory can be processed through the Returns module.
-
-Return records allow the warehouse to distinguish between different outcomes instead of treating every returned item identically.
-
-The system can track:
+The system currently handles records for:
 
 - Good returns
-- Damaged returns
-- Missing or unreturned quantities
-- Returned quantities
-- Inventory restored to availability
-- Related historical costs
-- User responsible for recording the return
+- Damaged items
+- Missing items
 
-This helps maintain accountability for equipment released from the warehouse.
+Good returned quantities can be made available in inventory again.
 
----
+Damaged and missing quantities are recorded separately so they can appear correctly in reports and inventory history.
 
-## Reporting System
+## Reports
 
-The project includes a dedicated reporting module for reviewing warehouse activity within selected reporting periods.
+The Reports module allows warehouse records to be viewed for a selected date range.
 
-Reports can be filtered by date range so administrators can inspect activity for periods such as:
+This can be used for weekly, monthly, or custom reports.
 
-- A specific day
-- A week
-- A month
-- A custom reporting period
+The report uses inventory transactions and related warehouse records to show what happened during the selected period.
 
-The reporting system summarizes inventory movement, usage, costs, returns, damages, missing inventory, requests, and other relevant warehouse activity.
+## Excel Export
 
----
+Reports can be exported as an `.xlsx` workbook.
 
-## Excel Report Export
+The export uses multiple worksheets instead of placing all records in one large sheet.
 
-Reports can be exported as an organized Microsoft Excel workbook.
+Current workbook sheets:
 
-Instead of placing every report into a single oversized worksheet, the exported workbook separates information into dedicated sheets.
+1. Summary
+2. Materials Used
+3. Tools Mobilized
+4. Stock In
+5. Good Returns
+6. Damaged Items
+7. Missing Items
+8. Adjustments
+9. Completed Requests
+10. Inventory Snapshot
+11. Transaction Ledger
 
-The workbook can include:
-
-1. **Summary**
-2. **Materials Used**
-3. **Tools Mobilized**
-4. **Stock In**
-5. **Good Returns**
-6. **Damaged Items**
-7. **Missing Items**
-8. **Adjustments**
-9. **Completed Requests**
-10. **Inventory Snapshot**
-11. **Transaction Ledger**
-
-This structure makes exported reports easier to review, print, archive, and present.
-
-### Summary Sheet
-
-Provides an overview of activity and financial values for the selected reporting period.
-
-### Materials Used
-
-Shows consumable materials released or used during operations together with their quantities and historical costs.
-
-### Tools Mobilized
-
-Shows reusable equipment released for operational use.
-
-### Stock In
-
-Records inventory received by the warehouse during the reporting period.
-
-### Good Returns
-
-Shows equipment successfully returned in usable condition.
-
-### Damaged Items
-
-Provides records of inventory returned or recorded as damaged.
-
-### Missing Items
-
-Provides records of inventory that was not returned or was recorded as missing.
-
-### Adjustments
-
-Shows manual inventory corrections and adjustments.
-
-### Completed Requests
-
-Provides information about inventory requests completed during the selected period.
-
-### Inventory Snapshot
-
-Provides a structured view of inventory balances.
-
-### Transaction Ledger
-
-Provides detailed inventory transaction history for auditing and review.
-
----
+This keeps different report types separated while still exporting them in one Excel file.
 
 ## Activity Logs
 
-The system maintains administrative activity logs to improve accountability.
+Important system actions are recorded in the Activity Logs.
 
-Activities can record information such as:
+A log can contain:
 
-- User performing the action
-- Action type
+- User
+- Action
 - Related record
 - Description
 - Previous values
-- Updated values
-- Additional transaction properties
+- New values
+- Additional properties
 - Date and time
 
-Examples include:
+Examples of logged actions include inventory changes, request processing, returns, and user account changes.
 
-- Inventory adjustments
-- Request approval
-- Request mobilization
-- Returns
-- User creation
-- User account changes
-
-Sensitive information such as passwords is not stored in the activity log.
-
----
+Passwords are not included in activity log data.
 
 ## User Management
 
-Administrators can manage system accounts through the User Management module.
+Admin users can manage system accounts.
 
-Administrators can:
+Available functions include:
 
-- Create users
-- Edit account information
-- Assign roles
-- Activate accounts
-- Deactivate accounts
-- Reset/change account passwords
+- Create user
+- Edit user
+- Assign role
+- Change account status
+- Change user password
 
-The system currently supports administrative and staff roles.
+The current roles are:
 
----
+```text
+Admin
+Staff
+```
 
-## Account Security
+Admin-only sections such as User Management and Activity Logs are not available to staff accounts.
 
-Several safeguards are implemented around account management.
+## Account Status
 
-### Inactive Account Protection
+User accounts can be set to:
 
-Accounts marked as inactive cannot authenticate normally.
+```text
+Active
+Inactive
+```
 
-If an account is deactivated while that user already has an active session, the system checks the account status on subsequent protected requests and invalidates access.
+Inactive accounts cannot log in.
 
-### Administrator Protection
+If an account is changed to inactive while the user is already logged in, the account is blocked on the user's next request and the existing session is ended.
 
-Administrative safeguards prevent actions that could leave the system without an active administrator.
+The system also prevents an administrator from accidentally deactivating their own account or removing their own Admin role.
 
-A logged-in administrator is also protected from accidentally:
+## Technology Used
 
-- Deactivating their own account
-- Removing their own administrator role
-
-### Password Protection
-
-Passwords are hashed through Laravel's authentication system and are never written into activity logs.
-
----
-
-## Roles and Permissions
-
-### Admin
-
-Administrative users can perform management functions including inventory administration, reports, activity monitoring, and user management.
-
-### Staff
-
-Staff accounts are intended for permitted warehouse operations while sensitive administrative areas such as user management and activity logs are restricted.
-
-Backend authorization is used in addition to hiding restricted navigation elements.
-
----
-
-## Inventory Accountability
-
-One of the primary objectives of the system is maintaining traceability.
-
-Rather than only answering:
-
-> "How many items do we have?"
-
-the system is designed to help answer:
-
-> "What happened to the inventory?"
-
-This includes questions such as:
-
-- What entered the warehouse?
-- What was requested?
-- Who approved the request?
-- What was released?
-- What materials were consumed?
-- What tools are still in use?
-- What was returned?
-- What was damaged?
-- What is missing?
-- What did those items cost at the time?
-- Who performed the transaction?
-- When did the activity occur?
-
----
-
-## Technology Stack
-
-The system is built using:
-
-- **Laravel**
-- **PHP**
-- **Blade**
-- **Tailwind CSS**
-- **Alpine.js**
-- **Vite**
-- **SQLite / Laravel Database Layer**
-- **Laravel Breeze**
-- **Maatwebsite Laravel Excel**
-- **PhpSpreadsheet**
-- **Composer**
-- **NPM**
-- **Git / GitHub**
-
----
+- PHP
+- Laravel
+- Blade
+- Tailwind CSS
+- Alpine.js
+- JavaScript
+- SQLite
+- Laravel Breeze
+- Maatwebsite Laravel Excel
+- PhpSpreadsheet
+- Composer
+- NPM
+- Vite
+- Git
+- GitHub
 
 ## Project Structure
 
-Important application areas include:
+Some of the main application directories are:
 
 ```text
 app/
@@ -430,59 +286,48 @@ resources/
     └── users/
 ```
 
-The project separates major inventory operations into controllers, request validation, action classes, services, models, and reporting/export components.
-
----
-
-## Development Installation
-
-This repository is private and proprietary. These instructions are intended for authorized development environments.
+## Local Setup
 
 ### Requirements
 
-Ensure the development machine has:
-
 - PHP
 - Composer
-- Node.js / NPM
-- Required PHP extensions
-- SQLite or another configured database
+- Node.js and NPM
+- SQLite
 - Git
 
-### Setup
-
-Clone the authorized repository:
+Clone the repository:
 
 ```bash
-git clone <authorized-repository-url>
+git clone <repository-url>
 cd kbumpc-inventory
 ```
 
-Install PHP dependencies:
+Install PHP packages:
 
 ```bash
 composer install
 ```
 
-Install frontend dependencies:
+Install frontend packages:
 
 ```bash
 npm install
 ```
 
-Create the environment configuration:
+Create the environment file:
 
 ```bash
 cp .env.example .env
 ```
 
-On Windows PowerShell, this can instead be:
+For PowerShell:
 
 ```powershell
 Copy-Item .env.example .env
 ```
 
-Generate the application key:
+Generate the Laravel application key:
 
 ```bash
 php artisan key:generate
@@ -490,13 +335,13 @@ php artisan key:generate
 
 Configure the database in `.env`.
 
-Run migrations:
+Run the migrations:
 
 ```bash
 php artisan migrate
 ```
 
-Build frontend assets:
+Build the frontend:
 
 ```bash
 npm run build
@@ -508,19 +353,17 @@ For development:
 npm run dev
 ```
 
-Start Laravel:
+Run Laravel:
 
 ```bash
 php artisan serve
 ```
 
----
+## Files Not Included in Git
 
-## Repository Security
+Development and sensitive files are excluded from the repository through `.gitignore`.
 
-Sensitive runtime information is intentionally excluded from version control.
-
-Examples include:
+This includes files such as:
 
 ```text
 .env
@@ -528,106 +371,59 @@ database/database.sqlite
 vendor/
 node_modules/
 storage logs
-generated build/runtime files
 ```
 
-Environment credentials, real operational databases, passwords, and production secrets must never be committed to this repository.
+A local database must be created when setting up a new copy of the project.
 
----
+## Current Status
 
-## Project Status
+Core system development is complete.
 
-**Core Development: Completed**
-
-Implemented major modules include:
-
-- Inventory management
-- Inventory stock transactions
-- Unit cost tracking
-- Material and tool requests
-- Request approval
-- Inventory mobilization
-- Returns processing
-- Damage and missing-item tracking
-- Reporting
-- Multi-sheet Excel exports
-- Activity logs
-- User management
-- Role-based access
-- Inactive account protection
-
-The project may continue to receive user-interface polishing, quality assurance improvements, deployment configuration, and client-specific changes before production rollout.
-
----
-
-## Future / Final Polishing
-
-Planned final improvements may include:
-
-- UI and responsive-layout refinements
-- Improved Activity Log detail presentation
-- Wide landscape-style Activity Log details modal
-- Human-readable audit property formatting
-- Additional usability improvements
-- Production deployment configuration
-- Backup and recovery procedures
-- Client-specific configuration
-- Final user acceptance testing
-
----
-
-## Screenshots
-
-Project screenshots can be added here to demonstrate:
+Completed modules:
 
 - Dashboard
 - Inventory
-- Inventory details
-- Requests
+- Stock adjustments
+- Inventory requests
+- Request approval
+- Request mobilization
 - Returns
+- Item cost tracking
 - Reports
-- Excel report output
-- Activity Logs
-- User Management
+- Excel export
+- Activity logs
+- User management
+- Account status checking
+- Admin and staff access control
 
----
+The system is currently being prepared for final UI cleanup, testing, deployment, and user acceptance testing.
 
-## Purpose
+## Planned Final Work
 
-This project serves as both a functional warehouse inventory solution and a software development project demonstrating the implementation of:
+Before production deployment:
 
-- Business workflow modeling
-- Inventory transaction management
-- Database relationships
-- Historical costing
-- Audit trails
-- Role-based authorization
-- Authentication safeguards
-- Administrative interfaces
-- Report generation
-- Excel workbook generation
-- Laravel application architecture
-
----
+- Final UI cleanup
+- Activity Log details modal
+- Responsive layout checks
+- Final workflow testing
+- Production configuration
+- Database backup procedure
+- Restore testing
+- User acceptance testing
+- Client deployment
 
 ## License
 
-**Copyright © 2026 Jairus Gian S. Ardiente. All Rights Reserved.**
+Copyright © 2026 Jairus Gian S. Ardiente.
 
-This project is proprietary software.
+All Rights Reserved.
 
-Access to this repository does not grant permission to use, copy, modify, redistribute, deploy, sublicense, sell, or commercially exploit the software.
+This project is proprietary software. The source code may not be used, copied, modified, distributed, sold, or deployed without permission from the copyright holder.
 
-Any use of the software requires explicit authorization from the copyright holder.
-
-See the [`LICENSE`](LICENSE) file for the complete terms.
-
----
+See [LICENSE](LICENSE) for the full terms.
 
 ## Developer
 
 **Jairus Gian S. Ardiente**
 
 BS Information Technology
-
-Developer of the KBUMPC Inventory Management System.
