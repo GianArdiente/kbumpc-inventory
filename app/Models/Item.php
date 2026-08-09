@@ -22,8 +22,10 @@ class Item extends Model
         'category',
         'consumption_type',
         'unit',
+        'unit_cost',
         'overall_stock',
         'available_quantity',
+        'reserved_quantity',
         'minimum_stock_level',
         'storage_location',
         'remarks',
@@ -38,6 +40,7 @@ class Item extends Model
     protected function casts(): array
     {
         return [
+            'unit_cost' => 'decimal:2',
             'archived_at' => 'datetime',
         ];
     }

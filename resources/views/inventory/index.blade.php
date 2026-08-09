@@ -15,22 +15,56 @@
                 </p>
             </div>
 
-            <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-                <p class="text-sm font-medium text-slate-500">
-                    Available Units
+            <div class="rounded-2xl border border-emerald-200 bg-emerald-50 p-5 shadow-sm">
+                <p class="text-sm font-medium text-emerald-800">
+                    Free Units
                 </p>
 
-                <p class="mt-3 text-3xl font-semibold text-slate-950">
-                    {{ number_format($statistics['available_units']) }}
+                <p class="mt-3 text-3xl font-semibold text-emerald-950">
+                    {{ number_format($statistics['free_units']) }}
+                </p>
+
+                <p class="mt-2 text-xs text-emerald-700">
+                    Units still available for new requests
                 </p>
             </div>
 
+            <div class="rounded-2xl border border-indigo-200 bg-indigo-50 p-5 shadow-sm">
+                <p class="text-sm font-medium text-indigo-800">
+                    Reserved Units
+                </p>
+
+                <p class="mt-3 text-3xl font-semibold text-indigo-950">
+                    {{ number_format($statistics['reserved_units']) }}
+                </p>
+
+                <p class="mt-2 text-xs text-indigo-700">
+                    Committed to approved requests
+                </p>
+            </div>
+
+            <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+                <p class="text-sm font-medium text-slate-500">
+                    Physical Units
+                </p>
+
+                <p class="mt-3 text-3xl font-semibold text-slate-950">
+                    {{ number_format($statistics['physical_units']) }}
+                </p>
+
+                <p class="mt-2 text-xs text-slate-500">
+                    Units currently inside the warehouse
+                </p>
+            </div>
+        </section>
+
+        <section class="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
             <div class="rounded-2xl border border-amber-200 bg-amber-50 p-5 shadow-sm">
                 <p class="text-sm font-medium text-amber-800">
                     Low-Stock Items
                 </p>
 
-                <p class="mt-3 text-3xl font-semibold text-amber-950">
+                <p class="mt-3 text-2xl font-semibold text-amber-950">
                     {{ number_format($statistics['low_stock_items']) }}
                 </p>
             </div>
@@ -40,8 +74,18 @@
                     Out-of-Stock Items
                 </p>
 
-                <p class="mt-3 text-3xl font-semibold text-rose-950">
+                <p class="mt-3 text-2xl font-semibold text-rose-950">
                     {{ number_format($statistics['out_of_stock_items']) }}
+                </p>
+            </div>
+
+            <div class="rounded-2xl border border-indigo-200 bg-indigo-50 p-5 shadow-sm">
+                <p class="text-sm font-medium text-indigo-800">
+                    Fully Reserved Items
+                </p>
+
+                <p class="mt-3 text-2xl font-semibold text-indigo-950">
+                    {{ number_format($statistics['fully_reserved_items']) }}
                 </p>
             </div>
         </section>
@@ -61,7 +105,7 @@
                         </h3>
 
                         <p class="mt-1 text-sm text-slate-500">
-                            Monitor warehouse tools, equipment, materials, and consumables.
+                            Physical stock, reservations, free quantities, and current reference costs.
                         </p>
                     </div>
 
@@ -81,10 +125,7 @@
                     class="mt-5 grid gap-3 md:grid-cols-2 xl:grid-cols-5"
                 >
                     <div class="md:col-span-2">
-                        <label
-                            for="search"
-                            class="sr-only"
-                        >
+                        <label for="search" class="sr-only">
                             Search inventory
                         </label>
 
@@ -99,10 +140,7 @@
                     </div>
 
                     <div>
-                        <label
-                            for="category"
-                            class="sr-only"
-                        >
+                        <label for="category" class="sr-only">
                             Category
                         </label>
 
@@ -144,10 +182,7 @@
                     </div>
 
                     <div>
-                        <label
-                            for="consumption_type"
-                            class="sr-only"
-                        >
+                        <label for="consumption_type" class="sr-only">
                             Consumption type
                         </label>
 
@@ -181,10 +216,7 @@
                     </div>
 
                     <div>
-                        <label
-                            for="stock_status"
-                            class="sr-only"
-                        >
+                        <label for="stock_status" class="sr-only">
                             Stock status
                         </label>
 
@@ -206,6 +238,26 @@
                             </option>
 
                             <option
+                                value="partially_reserved"
+                                @selected(
+                                    ($filters['stock_status'] ?? '')
+                                    === 'partially_reserved'
+                                )
+                            >
+                                Partially reserved
+                            </option>
+
+                            <option
+                                value="fully_reserved"
+                                @selected(
+                                    ($filters['stock_status'] ?? '')
+                                    === 'fully_reserved'
+                                )
+                            >
+                                Fully reserved
+                            </option>
+
+                            <option
                                 value="low_stock"
                                 @selected(
                                     ($filters['stock_status'] ?? '')
@@ -223,6 +275,16 @@
                                 )
                             >
                                 Out of stock
+                            </option>
+
+                            <option
+                                value="overcommitted"
+                                @selected(
+                                    ($filters['stock_status'] ?? '')
+                                    === 'overcommitted'
+                                )
+                            >
+                                Overcommitted
                             </option>
 
                             <option
@@ -272,11 +334,27 @@
                             </th>
 
                             <th class="px-5 py-3 text-right text-xs font-semibold uppercase tracking-wide text-slate-500">
-                                Available
+                                Unit Cost
+                            </th>
+
+                            <th class="px-5 py-3 text-right text-xs font-semibold uppercase tracking-wide text-slate-500">
+                                Physical
+                            </th>
+
+                            <th class="px-5 py-3 text-right text-xs font-semibold uppercase tracking-wide text-slate-500">
+                                Reserved
+                            </th>
+
+                            <th class="px-5 py-3 text-right text-xs font-semibold uppercase tracking-wide text-slate-500">
+                                Free
                             </th>
 
                             <th class="px-5 py-3 text-right text-xs font-semibold uppercase tracking-wide text-slate-500">
                                 Overall
+                            </th>
+
+                            <th class="px-5 py-3 text-right text-xs font-semibold uppercase tracking-wide text-slate-500">
+                                Overall Value
                             </th>
 
                             <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">
@@ -296,15 +374,13 @@
                     <tbody class="divide-y divide-slate-100 bg-white">
                         @forelse ($items as $item)
                             @php
-                                $isArchived = $item->archived_at !== null;
-                                $isOutOfStock =
-                                    ! $isArchived &&
-                                    $item->available_quantity === 0;
-                                $isLowStock =
-                                    ! $isArchived &&
-                                    ! $isOutOfStock &&
-                                    $item->available_quantity
-                                        <= $item->minimum_stock_level;
+                                $stock = $item->stock_snapshot;
+
+                                $overallValue =
+                                    $item->unit_cost !== null
+                                        ? (float) $item->unit_cost
+                                            * $stock['overall']
+                                        : null;
                             @endphp
 
                             <tr class="hover:bg-slate-50/80">
@@ -323,12 +399,60 @@
                                 </td>
 
                                 <td class="whitespace-nowrap px-5 py-4 text-sm capitalize text-slate-600">
-                                    {{ str_replace('-', ' ', $item->consumption_type) }}
+                                    {{ str_replace(
+                                        '-',
+                                        ' ',
+                                        $item->consumption_type
+                                    ) }}
+                                </td>
+
+                                <td class="whitespace-nowrap px-5 py-4 text-right">
+                                    @if ($item->unit_cost !== null)
+                                        <span class="font-semibold text-slate-950">
+                                            ₱{{ number_format(
+                                                (float) $item->unit_cost,
+                                                2
+                                            ) }}
+                                        </span>
+
+                                        <p class="mt-1 text-xs text-slate-400">
+                                            per {{ strtolower($item->unit) }}
+                                        </p>
+                                    @else
+                                        <span class="text-sm text-slate-400">
+                                            Not encoded
+                                        </span>
+                                    @endif
                                 </td>
 
                                 <td class="whitespace-nowrap px-5 py-4 text-right">
                                     <span class="font-semibold text-slate-950">
-                                        {{ number_format($item->available_quantity) }}
+                                        {{ number_format($stock['physical']) }}
+                                    </span>
+
+                                    <span class="ml-1 text-xs text-slate-500">
+                                        {{ $item->unit }}
+                                    </span>
+                                </td>
+
+                                <td class="whitespace-nowrap px-5 py-4 text-right">
+                                    <span class="font-semibold text-indigo-700">
+                                        {{ number_format($stock['reserved']) }}
+                                    </span>
+
+                                    <span class="ml-1 text-xs text-indigo-500">
+                                        {{ $item->unit }}
+                                    </span>
+                                </td>
+
+                                <td class="whitespace-nowrap px-5 py-4 text-right">
+                                    <span
+                                        class="font-semibold
+                                            {{ $stock['free'] > 0
+                                                ? 'text-emerald-700'
+                                                : 'text-rose-700' }}"
+                                    >
+                                        {{ number_format($stock['free']) }}
                                     </span>
 
                                     <span class="ml-1 text-xs text-slate-500">
@@ -338,28 +462,72 @@
 
                                 <td class="whitespace-nowrap px-5 py-4 text-right">
                                     <span class="font-semibold text-slate-700">
-                                        {{ number_format($item->overall_stock) }}
+                                        {{ number_format($stock['overall']) }}
+                                    </span>
+
+                                    <span class="ml-1 text-xs text-slate-500">
+                                        {{ $item->unit }}
                                     </span>
                                 </td>
 
-                                <td class="whitespace-nowrap px-5 py-4">
-                                    @if ($isArchived)
-                                        <span class="rounded-full bg-slate-200 px-3 py-1 text-xs font-semibold text-slate-700">
-                                            Archived
-                                        </span>
-                                    @elseif ($isOutOfStock)
-                                        <span class="rounded-full bg-rose-100 px-3 py-1 text-xs font-semibold text-rose-800">
-                                            Out of stock
-                                        </span>
-                                    @elseif ($isLowStock)
-                                        <span class="rounded-full bg-amber-100 px-3 py-1 text-xs font-semibold text-amber-800">
-                                            Low stock
+                                <td class="whitespace-nowrap px-5 py-4 text-right">
+                                    @if ($overallValue !== null)
+                                        <span class="font-semibold text-slate-950">
+                                            ₱{{ number_format(
+                                                $overallValue,
+                                                2
+                                            ) }}
                                         </span>
                                     @else
-                                        <span class="rounded-full bg-emerald-100 px-3 py-1 text-xs font-semibold text-emerald-800">
-                                            Available
+                                        <span class="text-sm text-slate-400">
+                                            —
                                         </span>
                                     @endif
+                                </td>
+
+                                <td class="whitespace-nowrap px-5 py-4">
+                                    @switch($stock['status'])
+                                        @case('archived')
+                                            <span class="rounded-full bg-slate-200 px-3 py-1 text-xs font-semibold text-slate-700">
+                                                Archived
+                                            </span>
+                                            @break
+
+                                        @case('overcommitted')
+                                            <span class="rounded-full bg-orange-100 px-3 py-1 text-xs font-semibold text-orange-800">
+                                                Overcommitted
+                                            </span>
+                                            @break
+
+                                        @case('out_of_stock')
+                                            <span class="rounded-full bg-rose-100 px-3 py-1 text-xs font-semibold text-rose-800">
+                                                Out of Stock
+                                            </span>
+                                            @break
+
+                                        @case('fully_reserved')
+                                            <span class="rounded-full bg-indigo-100 px-3 py-1 text-xs font-semibold text-indigo-800">
+                                                Fully Reserved
+                                            </span>
+                                            @break
+
+                                        @case('partially_reserved')
+                                            <span class="rounded-full bg-sky-100 px-3 py-1 text-xs font-semibold text-sky-800">
+                                                Partially Reserved
+                                            </span>
+                                            @break
+
+                                        @case('low_stock')
+                                            <span class="rounded-full bg-amber-100 px-3 py-1 text-xs font-semibold text-amber-800">
+                                                Low Stock
+                                            </span>
+                                            @break
+
+                                        @default
+                                            <span class="rounded-full bg-emerald-100 px-3 py-1 text-xs font-semibold text-emerald-800">
+                                                Available
+                                            </span>
+                                    @endswitch
                                 </td>
 
                                 <td class="whitespace-nowrap px-5 py-4 text-sm text-slate-600">
@@ -369,20 +537,26 @@
                                 <td class="whitespace-nowrap px-5 py-4 text-right">
                                     <div class="flex items-center justify-end gap-3">
                                         <a
-                                            href="{{ route('inventory.show', $item) }}"
+                                            href="{{ route(
+                                                'inventory.show',
+                                                $item
+                                            ) }}"
                                             class="text-sm font-semibold text-slate-700 hover:text-slate-950"
                                         >
                                             View
                                         </a>
 
-                                    @if (
-                                        $item->archived_at !== null &&
-                                        auth()->user()->role === 'admin'
-                                    )
-                                        <form
-                                            method="POST"
-                                            action="{{ route('inventory.restore', $item) }}"
-                                            onsubmit="return confirm('Restore {{ $item->name }} to the active inventory list?');"
+                                        @if (
+                                            $item->archived_at !== null
+                                            && auth()->user()->role === 'admin'
+                                        )
+                                            <form
+                                                method="POST"
+                                                action="{{ route(
+                                                    'inventory.restore',
+                                                    $item
+                                                ) }}"
+                                                onsubmit="return confirm('Restore {{ $item->name }} to the active inventory list?');"
                                             >
                                                 @csrf
                                                 @method('PATCH')
@@ -390,18 +564,18 @@
                                                 <button
                                                     type="submit"
                                                     class="text-sm font-semibold text-emerald-700 hover:text-emerald-900"
-                                            >
-                                                Restore
-                                            </button>
-                                        </form>
-                                    @endif
-                                </div>
-                            </td>
+                                                >
+                                                    Restore
+                                                </button>
+                                            </form>
+                                        @endif
+                                    </div>
+                                </td>
                             </tr>
                         @empty
                             <tr>
                                 <td
-                                    colspan="8"
+                                    colspan="12"
                                     class="px-5 py-14 text-center"
                                 >
                                     <p class="font-semibold text-slate-800">

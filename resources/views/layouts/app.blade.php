@@ -60,37 +60,55 @@
                 </a>
 
                 <a
-                    href="#"
-                    class="flex items-center rounded-lg px-4 py-3 text-sm font-medium text-slate-300 transition hover:bg-slate-900 hover:text-white"
+                    href="{{ route('requests.index') }}"
+                    class="flex items-center rounded-lg px-4 py-3 text-sm font-medium transition
+                        {{ request()->routeIs('requests.*')
+                            ? 'bg-white text-slate-950'
+                            : 'text-slate-300 hover:bg-slate-900 hover:text-white' }}"
                 >
                     Requests
                 </a>
 
                 <a
-                    href="#"
-                    class="flex items-center rounded-lg px-4 py-3 text-sm font-medium text-slate-300 transition hover:bg-slate-900 hover:text-white"
+                    href="{{ route('returns.index') }}"
+                    class="flex items-center rounded-lg px-4 py-3 text-sm font-medium transition
+                        {{ request()->routeIs('returns.*')
+                            ? 'bg-white text-slate-950'
+                            : 'text-slate-300 hover:bg-slate-900 hover:text-white' }}"
                 >
                     Returns
                 </a>
 
                 <a
-                    href="#"
-                    class="flex items-center rounded-lg px-4 py-3 text-sm font-medium text-slate-300 transition hover:bg-slate-900 hover:text-white"
+                    href="{{ route('reports.index') }}"
+                    class="flex items-center rounded-lg px-4 py-3 text-sm font-medium transition
+                        {{ request()->routeIs('reports.*')
+                            ? 'bg-white text-slate-950'
+                            : 'text-slate-300 hover:bg-slate-900 hover:text-white' }}"
                 >
                     Reports
                 </a>
 
-                <a
-                    href="#"
-                    class="flex items-center rounded-lg px-4 py-3 text-sm font-medium text-slate-300 transition hover:bg-slate-900 hover:text-white"
-                >
-                    Activity Logs
-                </a>
-
-                @if (auth()->user()->role === 'admin')
+                @if (
+                    auth()->user()->role === 'admin'
+                    && auth()->user()->status === 'active'
+                )
                     <a
-                        href="#"
-                        class="flex items-center rounded-lg px-4 py-3 text-sm font-medium text-slate-300 transition hover:bg-slate-900 hover:text-white"
+                        href="{{ route('activity-logs.index') }}"
+                        class="flex items-center rounded-lg px-4 py-3 text-sm font-medium transition
+                            {{ request()->routeIs('activity-logs.*')
+                                ? 'bg-white text-slate-950'
+                                : 'text-slate-300 hover:bg-slate-900 hover:text-white' }}"
+                    >
+                        Activity Logs
+                    </a>
+
+                    <a
+                        href="{{ route('users.index') }}"
+                        class="flex items-center rounded-lg px-4 py-3 text-sm font-medium transition
+                            {{ request()->routeIs('users.*')
+                                ? 'bg-white text-slate-950'
+                                : 'text-slate-300 hover:bg-slate-900 hover:text-white' }}"
                     >
                         Users
                     </a>

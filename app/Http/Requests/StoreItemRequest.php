@@ -25,11 +25,13 @@ class StoreItemRequest extends FormRequest
                 'max:50',
                 Rule::unique('items', 'item_code'),
             ],
+
             'name' => [
                 'required',
                 'string',
                 'max:150',
             ],
+
             'category' => [
                 'required',
                 Rule::in([
@@ -39,6 +41,7 @@ class StoreItemRequest extends FormRequest
                     'consumable',
                 ]),
             ],
+
             'consumption_type' => [
                 'required',
                 Rule::in([
@@ -46,26 +49,39 @@ class StoreItemRequest extends FormRequest
                     'non-consumable',
                 ]),
             ],
+
             'unit' => [
                 'required',
                 'string',
                 'max:50',
             ],
+
+            'unit_cost' => [
+                'nullable',
+                'numeric',
+                'min:0',
+                'max:9999999999.99',
+                'decimal:0,2',
+            ],
+
             'initial_stock' => [
                 'required',
                 'integer',
                 'min:0',
             ],
+
             'minimum_stock_level' => [
                 'required',
                 'integer',
                 'min:0',
             ],
+
             'storage_location' => [
                 'nullable',
                 'string',
                 'max:150',
             ],
+
             'remarks' => [
                 'nullable',
                 'string',
@@ -80,7 +96,18 @@ class StoreItemRequest extends FormRequest
             'item_code' => strtoupper(
                 trim((string) $this->input('item_code'))
             ),
-            'name' => trim((string) $this->input('name')),
+
+            'name' => trim(
+                (string) $this->input('name')
+            ),
+
+            'unit' => trim(
+                (string) $this->input('unit')
+            ),
+
+            'unit_cost' => $this->filled('unit_cost')
+                ? $this->input('unit_cost')
+                : null,
         ]);
     }
 }

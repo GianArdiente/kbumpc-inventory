@@ -42,15 +42,29 @@ class LoginRequest extends FormRequest
     {
         $this->ensureIsNotRateLimited();
 
-        if (! Auth::attempt($this->only('email', 'password'), $this->boolean('remember'))) {
-            RateLimiter::hit($this->throttleKey());
+        $credentials = [
+            'email' => $this->string('email')->toString(),
+            'password' => $this->string('password')->toString(),
+            'status' => 'active',
+        ];
+
+        if (! Auth::attempt(
+            $credentials,
+            $this->boolean('remember')
+        )) {
+            RateLimiter::hit(
+                $this->throttleKey()
+            );
 
             throw ValidationException::withMessages([
-                'email' => trans('auth.failed'),
+                'email' =>
+                    'These credentials are invalid, or this account is inactive.',
             ]);
         }
 
-        RateLimiter::clear($this->throttleKey());
+        RateLimiter::clear(
+            $this->throttleKey()
+        );
     }
 
     /**

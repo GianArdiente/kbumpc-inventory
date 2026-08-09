@@ -18,13 +18,16 @@
                 </h3>
 
                 <p class="mt-1 text-sm text-slate-500">
-                    Update descriptive information without directly changing stock quantities.
+                    Update descriptive information and the current reference cost without directly changing stock quantities.
                 </p>
             </div>
 
             <div class="grid gap-6 p-6 md:grid-cols-2">
                 <div>
-                    <label for="item_code" class="block text-sm font-semibold text-slate-700">
+                    <label
+                        for="item_code"
+                        class="block text-sm font-semibold text-slate-700"
+                    >
                         Item Code
                     </label>
 
@@ -38,12 +41,17 @@
                     >
 
                     @error('item_code')
-                        <p class="mt-2 text-sm text-rose-600">{{ $message }}</p>
+                        <p class="mt-2 text-sm text-rose-600">
+                            {{ $message }}
+                        </p>
                     @enderror
                 </div>
 
                 <div>
-                    <label for="name" class="block text-sm font-semibold text-slate-700">
+                    <label
+                        for="name"
+                        class="block text-sm font-semibold text-slate-700"
+                    >
                         Item Name
                     </label>
 
@@ -57,12 +65,17 @@
                     >
 
                     @error('name')
-                        <p class="mt-2 text-sm text-rose-600">{{ $message }}</p>
+                        <p class="mt-2 text-sm text-rose-600">
+                            {{ $message }}
+                        </p>
                     @enderror
                 </div>
 
                 <div>
-                    <label for="category" class="block text-sm font-semibold text-slate-700">
+                    <label
+                        for="category"
+                        class="block text-sm font-semibold text-slate-700"
+                    >
                         Category
                     </label>
 
@@ -72,19 +85,34 @@
                         required
                         class="mt-2 w-full rounded-xl border-slate-300 text-sm shadow-sm focus:border-slate-500 focus:ring-slate-500"
                     >
-                        @foreach (['tool', 'equipment', 'material', 'consumable'] as $category)
+                        @foreach (
+                            ['tool', 'equipment', 'material', 'consumable']
+                            as $category
+                        )
                             <option
                                 value="{{ $category }}"
-                                @selected(old('category', $item->category) === $category)
+                                @selected(
+                                    old('category', $item->category)
+                                    === $category
+                                )
                             >
                                 {{ ucfirst($category) }}
                             </option>
                         @endforeach
                     </select>
+
+                    @error('category')
+                        <p class="mt-2 text-sm text-rose-600">
+                            {{ $message }}
+                        </p>
+                    @enderror
                 </div>
 
                 <div>
-                    <label for="consumption_type" class="block text-sm font-semibold text-slate-700">
+                    <label
+                        for="consumption_type"
+                        class="block text-sm font-semibold text-slate-700"
+                    >
                         Consumption Type
                     </label>
 
@@ -97,8 +125,10 @@
                         <option
                             value="consumable"
                             @selected(
-                                old('consumption_type', $item->consumption_type)
-                                === 'consumable'
+                                old(
+                                    'consumption_type',
+                                    $item->consumption_type
+                                ) === 'consumable'
                             )
                         >
                             Consumable
@@ -107,17 +137,28 @@
                         <option
                             value="non-consumable"
                             @selected(
-                                old('consumption_type', $item->consumption_type)
-                                === 'non-consumable'
+                                old(
+                                    'consumption_type',
+                                    $item->consumption_type
+                                ) === 'non-consumable'
                             )
                         >
                             Non-consumable
                         </option>
                     </select>
+
+                    @error('consumption_type')
+                        <p class="mt-2 text-sm text-rose-600">
+                            {{ $message }}
+                        </p>
+                    @enderror
                 </div>
 
                 <div>
-                    <label for="unit" class="block text-sm font-semibold text-slate-700">
+                    <label
+                        for="unit"
+                        class="block text-sm font-semibold text-slate-700"
+                    >
                         Unit of Measurement
                     </label>
 
@@ -129,10 +170,49 @@
                         required
                         class="mt-2 w-full rounded-xl border-slate-300 text-sm shadow-sm focus:border-slate-500 focus:ring-slate-500"
                     >
+
+                    @error('unit')
+                        <p class="mt-2 text-sm text-rose-600">
+                            {{ $message }}
+                        </p>
+                    @enderror
                 </div>
 
                 <div>
-                    <label for="minimum_stock_level" class="block text-sm font-semibold text-slate-700">
+                    <label
+                        for="unit_cost"
+                        class="block text-sm font-semibold text-slate-700"
+                    >
+                        Current Unit Cost (₱)
+                    </label>
+
+                    <input
+                        id="unit_cost"
+                        name="unit_cost"
+                        type="number"
+                        min="0"
+                        step="0.01"
+                        value="{{ old('unit_cost', $item->unit_cost) }}"
+                        placeholder="Example: 125.00"
+                        class="mt-2 w-full rounded-xl border-slate-300 text-sm shadow-sm focus:border-slate-500 focus:ring-slate-500"
+                    >
+
+                    <p class="mt-2 text-xs text-slate-500">
+                        Updating this changes the reference cost for future transactions only.
+                    </p>
+
+                    @error('unit_cost')
+                        <p class="mt-2 text-sm text-rose-600">
+                            {{ $message }}
+                        </p>
+                    @enderror
+                </div>
+
+                <div>
+                    <label
+                        for="minimum_stock_level"
+                        class="block text-sm font-semibold text-slate-700"
+                    >
                         Minimum Stock Level
                     </label>
 
@@ -141,14 +221,26 @@
                         name="minimum_stock_level"
                         type="number"
                         min="0"
-                        value="{{ old('minimum_stock_level', $item->minimum_stock_level) }}"
+                        value="{{ old(
+                            'minimum_stock_level',
+                            $item->minimum_stock_level
+                        ) }}"
                         required
                         class="mt-2 w-full rounded-xl border-slate-300 text-sm shadow-sm focus:border-slate-500 focus:ring-slate-500"
                     >
+
+                    @error('minimum_stock_level')
+                        <p class="mt-2 text-sm text-rose-600">
+                            {{ $message }}
+                        </p>
+                    @enderror
                 </div>
 
-                <div class="md:col-span-2">
-                    <label for="storage_location" class="block text-sm font-semibold text-slate-700">
+                <div>
+                    <label
+                        for="storage_location"
+                        class="block text-sm font-semibold text-slate-700"
+                    >
                         Storage Location
                     </label>
 
@@ -156,13 +248,25 @@
                         id="storage_location"
                         name="storage_location"
                         type="text"
-                        value="{{ old('storage_location', $item->storage_location) }}"
+                        value="{{ old(
+                            'storage_location',
+                            $item->storage_location
+                        ) }}"
                         class="mt-2 w-full rounded-xl border-slate-300 text-sm shadow-sm focus:border-slate-500 focus:ring-slate-500"
                     >
+
+                    @error('storage_location')
+                        <p class="mt-2 text-sm text-rose-600">
+                            {{ $message }}
+                        </p>
+                    @enderror
                 </div>
 
                 <div class="md:col-span-2">
-                    <label for="remarks" class="block text-sm font-semibold text-slate-700">
+                    <label
+                        for="remarks"
+                        class="block text-sm font-semibold text-slate-700"
+                    >
                         Remarks
                     </label>
 
@@ -172,6 +276,12 @@
                         rows="4"
                         class="mt-2 w-full rounded-xl border-slate-300 text-sm shadow-sm focus:border-slate-500 focus:ring-slate-500"
                     >{{ old('remarks', $item->remarks) }}</textarea>
+
+                    @error('remarks')
+                        <p class="mt-2 text-sm text-rose-600">
+                            {{ $message }}
+                        </p>
+                    @enderror
                 </div>
 
                 <div class="md:col-span-2 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3">
@@ -181,6 +291,7 @@
 
                     <p class="mt-1 text-sm text-amber-800">
                         Use the Adjust Stock action to preserve the inventory ledger.
+                        Unit cost changes apply to future transactions and do not rewrite historical costs.
                     </p>
                 </div>
             </div>

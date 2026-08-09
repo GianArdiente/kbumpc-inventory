@@ -86,17 +86,35 @@
                         required
                         class="mt-2 w-full rounded-xl border-slate-300 text-sm shadow-sm focus:border-slate-500 focus:ring-slate-500"
                     >
-                        <option value="">Select category</option>
-                        <option value="tool" @selected(old('category') === 'tool')>
+                        <option value="">
+                            Select category
+                        </option>
+
+                        <option
+                            value="tool"
+                            @selected(old('category') === 'tool')
+                        >
                             Tool
                         </option>
-                        <option value="equipment" @selected(old('category') === 'equipment')>
+
+                        <option
+                            value="equipment"
+                            @selected(old('category') === 'equipment')
+                        >
                             Equipment
                         </option>
-                        <option value="material" @selected(old('category') === 'material')>
+
+                        <option
+                            value="material"
+                            @selected(old('category') === 'material')
+                        >
                             Material
                         </option>
-                        <option value="consumable" @selected(old('category') === 'consumable')>
+
+                        <option
+                            value="consumable"
+                            @selected(old('category') === 'consumable')
+                        >
                             Consumable
                         </option>
                     </select>
@@ -122,16 +140,24 @@
                         required
                         class="mt-2 w-full rounded-xl border-slate-300 text-sm shadow-sm focus:border-slate-500 focus:ring-slate-500"
                     >
-                        <option value="">Select item type</option>
+                        <option value="">
+                            Select item type
+                        </option>
+
                         <option
                             value="consumable"
-                            @selected(old('consumption_type') === 'consumable')
+                            @selected(
+                                old('consumption_type') === 'consumable'
+                            )
                         >
                             Consumable
                         </option>
+
                         <option
                             value="non-consumable"
-                            @selected(old('consumption_type') === 'non-consumable')
+                            @selected(
+                                old('consumption_type') === 'non-consumable'
+                            )
                         >
                             Non-consumable
                         </option>
@@ -171,22 +197,28 @@
 
                 <div>
                     <label
-                        for="storage_location"
+                        for="unit_cost"
                         class="block text-sm font-semibold text-slate-700"
                     >
-                        Storage Location
+                        Unit Cost (₱)
                     </label>
 
                     <input
-                        id="storage_location"
-                        name="storage_location"
-                        type="text"
-                        value="{{ old('storage_location') }}"
-                        placeholder="Rack, shelf, or warehouse section"
+                        id="unit_cost"
+                        name="unit_cost"
+                        type="number"
+                        min="0"
+                        step="0.01"
+                        value="{{ old('unit_cost') }}"
+                        placeholder="Example: 125.00"
                         class="mt-2 w-full rounded-xl border-slate-300 text-sm shadow-sm focus:border-slate-500 focus:ring-slate-500"
                     >
 
-                    @error('storage_location')
+                    <p class="mt-2 text-xs text-slate-500">
+                        Current reference cost per unit. Leave blank if the cost is not yet known.
+                    </p>
+
+                    @error('unit_cost')
                         <p class="mt-2 text-sm text-rose-600">
                             {{ $message }}
                         </p>
@@ -237,6 +269,30 @@
                     >
 
                     @error('minimum_stock_level')
+                        <p class="mt-2 text-sm text-rose-600">
+                            {{ $message }}
+                        </p>
+                    @enderror
+                </div>
+
+                <div class="md:col-span-2">
+                    <label
+                        for="storage_location"
+                        class="block text-sm font-semibold text-slate-700"
+                    >
+                        Storage Location
+                    </label>
+
+                    <input
+                        id="storage_location"
+                        name="storage_location"
+                        type="text"
+                        value="{{ old('storage_location') }}"
+                        placeholder="Rack, shelf, or warehouse section"
+                        class="mt-2 w-full rounded-xl border-slate-300 text-sm shadow-sm focus:border-slate-500 focus:ring-slate-500"
+                    >
+
+                    @error('storage_location')
                         <p class="mt-2 text-sm text-rose-600">
                             {{ $message }}
                         </p>
