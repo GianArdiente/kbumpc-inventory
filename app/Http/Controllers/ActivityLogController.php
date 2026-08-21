@@ -18,6 +18,9 @@ class ActivityLogController extends Controller
                 && auth()->user()?->status === 'active',
             403
         );
+            auth()->user()->forceFill([
+                'activity_logs_last_viewed_at' => now(),
+            ])->save();
 
         $validated = $request->validate([
             'search' => [

@@ -95,34 +95,70 @@
                     <a
                         href="{{ route('inventory.index') }}"
                         @click="sidebarOpen = false"
-                        class="kbumpc-nav-link
+                        class="kbumpc-nav-link justify-between
                             {{ request()->routeIs('inventory.*')
                                 ? 'kbumpc-nav-link-active'
                                 : '' }}"
                     >
-                        Inventory
+                        <span>
+                            Inventory
+                        </span>
+
+                        @if (($sidebarNotifications['inventory'] ?? 0) > 0)
+                            <span
+                                class="inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-rose-500 px-1.5 text-[11px] font-bold leading-none text-white shadow-sm"
+                            >
+                                {{ $sidebarNotifications['inventory'] > 99
+                                    ? '99+'
+                                    : $sidebarNotifications['inventory'] }}
+                            </span>
+                        @endif
                     </a>
 
                     <a
                         href="{{ route('requests.index') }}"
                         @click="sidebarOpen = false"
-                        class="kbumpc-nav-link
+                        class="kbumpc-nav-link justify-between
                             {{ request()->routeIs('requests.*')
                                 ? 'kbumpc-nav-link-active'
                                 : '' }}"
                     >
-                        Requests
+                        <span>
+                            Requests
+                        </span>
+
+                        @if (($sidebarNotifications['requests'] ?? 0) > 0)
+                            <span
+                                class="inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-rose-500 px-1.5 text-[11px] font-bold leading-none text-white shadow-sm"
+                            >
+                                {{ $sidebarNotifications['requests'] > 99
+                                        ? '99+'
+                                    : $sidebarNotifications['requests'] }}
+                            </span>
+                        @endif
                     </a>
 
                     <a
                         href="{{ route('returns.index') }}"
                         @click="sidebarOpen = false"
-                        class="kbumpc-nav-link
+                        class="kbumpc-nav-link justify-between
                             {{ request()->routeIs('returns.*')
                                 ? 'kbumpc-nav-link-active'
-                                : '' }}"
+                                    : '' }}"
                     >
-                        Returns
+                        <span>
+                            Returns
+                       </span>
+
+                        @if (($sidebarNotifications['returns'] ?? 0) > 0)
+                            <span
+                                class="inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-rose-500 px-1.5 text-[11px] font-bold leading-none text-white shadow-sm"
+                            >
+                                {{ $sidebarNotifications['returns'] > 99
+                                    ? '99+'
+                                    : $sidebarNotifications['returns'] }}
+                            </span>
+                        @endif
                     </a>
 
                     <a
@@ -151,23 +187,47 @@
                         <a
                             href="{{ route('activity-logs.index') }}"
                             @click="sidebarOpen = false"
-                            class="kbumpc-nav-link
+                            class="kbumpc-nav-link justify-between
                                 {{ request()->routeIs('activity-logs.*')
                                     ? 'kbumpc-nav-link-active'
                                     : '' }}"
                         >
-                            Activity Logs
+                            <span>
+                                Activity Logs
+                            </span>
+
+                            @if (($sidebarNotifications['activity_logs'] ?? 0) > 0)
+                                <span
+                                    class="inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-rose-500 px-1.5 text-[11px] font-bold leading-none text-white shadow-sm"
+                                >
+                                    {{ $sidebarNotifications['activity_logs'] > 99
+                                        ? '99+'
+                                        : $sidebarNotifications['activity_logs'] }}
+                                </span>
+                            @endif
                         </a>
 
                         <a
                             href="{{ route('users.index') }}"
                             @click="sidebarOpen = false"
-                            class="kbumpc-nav-link
+                            class="kbumpc-nav-link justify-between
                                 {{ request()->routeIs('users.*')
                                     ? 'kbumpc-nav-link-active'
                                     : '' }}"
                         >
-                            Users
+                            <span>
+                                Users
+                            </span>
+
+                            @if (($sidebarNotifications['users'] ?? 0) > 0)
+                                <span
+                                    class="inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-rose-500 px-1.5 text-[11px] font-bold leading-none text-white shadow-sm"
+                                >
+                                    {{ $sidebarNotifications['users'] > 99
+                                        ? '99+'
+                                        : $sidebarNotifications['users'] }}
+                                </span>
+                            @endif
                         </a>
                     </div>
                 @endif
