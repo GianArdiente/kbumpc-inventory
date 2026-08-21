@@ -17,14 +17,15 @@ Route::get('/dashboard', [
     'index',
 ])
     ->middleware([
-        'auth',
-        'verified',
-    ])
+    'auth',
+    'verified',
+    'license.valid',
+])
     ->name('dashboard');
 
 Route::middleware([
     'auth',
-    'active',
+    'license.valid',
 ])->group(function () {
     /*
     |--------------------------------------------------------------------------

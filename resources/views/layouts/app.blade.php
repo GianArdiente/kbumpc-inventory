@@ -174,9 +174,32 @@
             </nav>
 
             {{-- Sidebar Footer --}}
+            @php
+                $licenseService = app(\App\Services\LicenseService::class);
+                $licenseValid = $licenseService->isValid();
+            @endphp
+
             <div class="border-t border-white/10 px-5 py-4">
-                <p class="text-xs text-slate-500">
-                    KBUMPC Warehouse System
+                <div class="flex items-center gap-2">
+                    <span
+                        class="h-2 w-2 rounded-full
+                            {{ $licenseValid
+                                ? 'bg-emerald-400'
+                                : 'bg-rose-400' }}"
+                    ></span>
+
+                    <p class="text-xs font-medium text-slate-300">
+                        {{ $licenseValid
+                            ? 'Licensed to KBUMPC'
+                            : 'License Invalid' }}
+                    </p>
+                </div>
+
+                <p class="mt-1 pl-4 text-[11px] text-slate-500">
+                    {{ config(
+                        'product.license.license_id',
+                        'No License ID'
+                    ) }}
                 </p>
             </div>
         </aside>

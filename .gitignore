@@ -35,4 +35,11 @@
 Homestead.json
 Homestead.yaml
 
-Thumbs.db
+Thumbs.db   
+
+# Licensing private material
+/tools/licensing/private/
+/tools/licensing/issued/
+
+# OpenSSL local random state
+/.rnd
